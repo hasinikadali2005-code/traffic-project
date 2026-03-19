@@ -1,0 +1,41 @@
+#root {
+  min-height: 100vh;
+}
+
+@keyframes intersection-dot-fast {
+  0% {
+    transform: translateX(0);
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateX(18px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(36px);
+    opacity: 0.75;
+  }
+}
+
+@keyframes intersection-dot-slow {
+  0% {
+    transform: translateX(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(4px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(8px);
+    opacity: 0.55;
+  }
+}
+
+.intersection-dot-active {
+  animation: intersection-dot-fast 1s linear infinite;
+}
+
+.intersection-dot-idle {
+  animation: intersection-dot-slow 4.5s ease-in-out infinite;
+}

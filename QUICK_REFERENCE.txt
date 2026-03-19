@@ -1,0 +1,82 @@
+========================================
+🚗 /detect ENDPOINT - QUICK REFERENCE
+========================================
+
+✅ STATUS: FULLY FUNCTIONAL & TESTED
+
+--------
+ENDPOINT
+--------
+POST http://localhost:5000/detect
+
+--------
+REQUEST
+--------
+{
+  "image": "base64_encoded_image_string"
+}
+
+---------
+RESPONSE
+---------
+{
+  "vehicle_count": 8,
+  "detections": [
+    {
+      "bbox": [x, y, w, h],
+      "class": "car",
+      "score": 0.65
+    }
+  ],
+  "success": true
+}
+
+--------
+START IT
+--------
+python api_server.py
+
+-------
+TEST IT
+-------
+python verify_detect_endpoint.py
+
+--------
+USE IT
+--------
+Python:
+  import requests, base64, cv2
+  image = cv2.imread('traffic.jpg')
+  _, buf = cv2.imencode('.jpg', image)
+  img_b64 = base64.b64encode(buf).decode()
+  
+  r = requests.post(
+    'http://localhost:5000/detect',
+    json={'image': img_b64}
+  )
+  print(f"Vehicles: {r.json()['vehicle_count']}")
+
+cURL:
+  curl -X POST http://localhost:5000/detect \
+    -H "Content-Type: application/json" \
+    -d '{"image":"base64_data"}'
+
+JavaScript:
+  fetch('http://localhost:5000/detect', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({image: base64String})
+  }).then(r => r.json())
+   .then(data => console.log(data.vehicle_count))
+
+--------
+FILES
+--------
+• api_server.py
+• vehicle_detector.py
+• test_api_endpoints.py
+• DETECT_ENDPOINT_GUIDE.md
+
+--------
+DONE! ✅
+--------
