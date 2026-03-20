@@ -1,5 +1,6 @@
 // API Configuration
-export const API_BASE_URL = 'http://localhost:5000'
+export const API_BASE_URL = 'https://traffic-project-clfg.onrender.com'
+
 export const API_ENDPOINTS = {
   HEALTH: '/health',
   DETECT: '/detect',
@@ -30,7 +31,7 @@ export const DENSITY_TO_DOTS = {
 export const IMAGE_CONFIG = {
   ACCEPT: 'image/*',
   JPEG_QUALITY: 0.92,
-  PREVIEW_HEIGHT: 224, // h-56 = 14rem = 224px
+  PREVIEW_HEIGHT: 224,
 }
 
 // API Status States
