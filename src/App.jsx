@@ -19,7 +19,6 @@ const GREEN_DURATION = {
 
 const YELLOW_DURATION_SECONDS = 3
 
-// ---------------- API CALL ----------------
 async function analyzeImage(file) {
   const formData = new FormData()
   formData.append("file", file)
@@ -32,7 +31,6 @@ async function analyzeImage(file) {
   return await res.json()
 }
 
-// ---------------- HELPERS ----------------
 function normalizeDensity(value) {
   if (!value) return "Low"
   const v = value.toLowerCase()
@@ -57,7 +55,6 @@ function sortLanesByPriority(lanes) {
     .sort((a, b) => priority[b.densityLevel] - priority[a.densityLevel])
 }
 
-// ---------------- MAIN APP ----------------
 function App() {
   const [lanes, setLanes] = useState(() => LANE_NAMES.map(name => ({
     name,
@@ -74,7 +71,6 @@ function App() {
 
   const analyzerRef = useRef(null)
 
-  // ---------------- START ----------------
   const handleStartSignalTiming = useCallback(async () => {
     const updated = []
 
@@ -95,11 +91,9 @@ function App() {
 
     setLanes(updated)
 
-    // 🔥 SORT BY PRIORITY
     const sorted = sortLanesByPriority(updated)
     setPriorityQueue(sorted)
 
-    // FIRST = highest priority
     const first = sorted[0]
 
     setActiveLaneIndex(first.index)
@@ -109,7 +103,6 @@ function App() {
 
   }, [lanes])
 
-  // ---------------- TIMER ----------------
   useEffect(() => {
     if (!isSignalRunning) return
 
@@ -120,7 +113,6 @@ function App() {
     return () => clearInterval(timer)
   }, [isSignalRunning])
 
-  // ---------------- PHASE SWITCH ----------------
   useEffect(() => {
     if (!isSignalRunning || secondsRemaining > 0) return
 
@@ -128,7 +120,6 @@ function App() {
       setActivePhase(SIGNAL_PHASES.YELLOW)
       setSecondsRemaining(YELLOW_DURATION_SECONDS)
     } else {
-      // 🔥 MOVE TO NEXT IN PRIORITY QUEUE
       setPriorityQueue(prev => {
         const newQueue = [...prev]
         const finished = newQueue.shift()
@@ -145,7 +136,6 @@ function App() {
     }
   }, [secondsRemaining, isSignalRunning, activePhase])
 
-  // ---------------- UI ----------------
   const lanesWithSignals = useMemo(() => (
     lanes.map((lane, i) => ({
       ...lane,
@@ -162,13 +152,26 @@ function App() {
 
       <LaneImageAnalyzer ref={analyzerRef} lanes={lanesWithSignals} onUpdate={setLanes} />
 
-      <button onClick={handleStartSignalTiming} style={{ padding: "10px 20px", marginTop: "20px" }}>
-        Start Signal Timing
-      </button>
-
-      {isSignalRunning && (
+      {/* 🔥 BUTTON FIXED HERE */}
+      {!isSignalRunning ? (
+        <button
+          onClick={handleStartSignalTiming}
+          style={{
+            backgroundColor: "#16a34a",
+            color: "white",
+            padding: "12px 24px",
+            fontSize: "16px",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+            marginTop: "20px"
+          }}
+        >
+          ▶ Start Signal Timing
+        </button>
+      ) : (
         <div style={{ marginTop: "20px" }}>
-          <h2>
+          <h2 style={{ color: activePhase === 'yellow' ? 'orange' : 'green' }}>
             ⏱ {secondsRemaining}s — {activePhase.toUpperCase()}
           </h2>
           <p>
@@ -176,15 +179,6 @@ function App() {
           </p>
         </div>
       )}
-
-      {/* DEBUG */}
-      <div style={{ marginTop: "20px" }}>
-        {lanes.map((lane, i) => (
-          <p key={i}>
-            Lane {lane.name}: {lane.densityLevel}
-          </p>
-        ))}
-      </div>
 
       <IntersectionView lanes={lanesWithSignals} activeLaneIndex={activeLaneIndex} />
     </main>
