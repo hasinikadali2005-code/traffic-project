@@ -17,12 +17,32 @@ app = Flask(__name__)
 CORS(app)
 
 # -------------------------------
-# ✅ ROOT ROUTE (FIXES EMPTY PAGE)
+# ✅ ROOT ROUTE (UPDATED UI)
 # -------------------------------
 @app.route("/")
 def home():
-    return "Traffic Backend Running ✅"
+    return """
+    <h1>🚦 Traffic Density Prediction API</h1>
+    <p>✅ Backend is running successfully</p>
+    <p>📌 Available endpoints:</p>
+    <ul>
+        <li>/health</li>
+        <li>/detect</li>
+        <li>/detect-file</li>
+        <li>/batch-detect</li>
+        <li>/config</li>
+    </ul>
+    """
 
+# -------------------------------
+# ✅ TEST ROUTE (NEW)
+# -------------------------------
+@app.route("/predict", methods=["GET"])
+def test_predict():
+    return jsonify({
+        "success": True,
+        "message": "Model API working perfectly 🚀"
+    })
 
 # -------------------------------
 # CONFIG
@@ -36,7 +56,6 @@ classifier = get_default_classifier(
     low_threshold=CLASSIFIER_LOW_THRESHOLD,
     high_threshold=CLASSIFIER_HIGH_THRESHOLD,
 )
-
 
 # -------------------------------
 # HELPERS
@@ -82,7 +101,6 @@ def _simple_density_response(result: dict, lane=None) -> dict:
     if not payload["success"]:
         payload["error"] = str(normalized.get("error", "Classification failed"))
     return payload
-
 
 # -------------------------------
 # ROUTES
@@ -190,7 +208,6 @@ def get_config():
         "low_threshold": classifier.low_threshold,
         "high_threshold": classifier.high_threshold,
     })
-
 
 # -------------------------------
 # ❗ IMPORTANT FOR RENDER
